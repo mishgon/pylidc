@@ -641,7 +641,7 @@ class Annotation(Base):
         """
         mask = self.boolean_mask()
         mask = np.pad(mask, [(1,1), (1,1), (1,1)], 'constant') # Cap the ends.
-        mask = mask.astype(float)
+        mask = mask.astype('float64')
 
         rij  = self.scan.pixel_spacing
         rk   = self.scan.slice_thickness
@@ -752,7 +752,7 @@ class Annotation(Base):
         rk   = self.scan.slice_thickness
 
         if backend == 'matplotlib':
-            verts, faces, _, _= marching_cubes(mask.astype(float), 0.5,
+            verts, faces, _, _= marching_cubes(mask.astype('float64'), 0.5,
                                                spacing=(rij, rij, rk),
                                                step_size=step)
             fig = plt.figure(figsize=figsize)
@@ -781,7 +781,7 @@ class Annotation(Base):
         elif backend == 'mayavi':
             try:
                 from mayavi import mlab
-                sf = mlab.pipeline.scalar_field(mask.astype(float))
+                sf = mlab.pipeline.scalar_field(mask.astype('float64'))
                 sf.spacing = [rij, rij, rk]
                 mlab.pipeline.iso_surface(sf, contours=[0.5])
                 mlab.show()
@@ -1020,7 +1020,7 @@ class Annotation(Base):
         z_to_index = lambda z: dict(zip(czs,cks))[z] - bb[2,0]#cks[0]
 
         # Get dimensions, initialize mask.
-        ni,nj,nk = np.diff(bb, axis=1).astype(int)[:,0] + 1
+        ni,nj,nk = np.diff(bb, axis=1).astype('int64')[:,0] + 1
         mask = np.zeros((ni,nj,nk), dtype=bool)
 
         # We check if these points are enclosed within each contour 
@@ -1336,7 +1336,7 @@ class Annotation(Base):
 
         # Create the non-interpolated CT volume.
         if resample_vol:
-            ctvol = np.zeros(x.shape+y.shape+z.shape, dtype=np.float64)
+            ctvol = np.zeros(x.shape+y.shape+z.shape, dtype='float64')
             for k in range(z.shape[0]):
                 ctvol[:,:,k] = images[k+az].pixel_array[ax:bx, ay:by]
 

@@ -652,5 +652,5 @@ class Scan(Base):
                 for x in images
             ],
             axis=-1,
-        ).astype(np.int16)
+        ).astype('int16')
         return volume
